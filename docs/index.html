@@ -1,1 +1,255 @@
-swiss-tax.html
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Tax — Kanton Bern</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+    .header { background: #d32f2f; color: white; padding: 20px 30px; display: flex; align-items: center; gap: 15px; }
+    .header h1 { font-size: 22px; font-weight: 600; }
+    .header .flag { font-size: 28px; }
+    .nav { background: #b71c1c; padding: 10px 30px; display: flex; gap: 20px; }
+    .nav a { color: rgba(255,255,255,.8); text-decoration: none; font-size: 14px; padding: 6px 14px; border-radius: 4px; transition: all .2s; }
+    .nav a:hover, .nav a.active { background: rgba(255,255,255,.15); color: white; }
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card { background: white; border-radius: 10px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .card h2 { font-size: 16px; color: #555; margin-bottom: 16px; text-transform: uppercase; letter-spacing: .5px; }
+    .stat { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+    .stat:last-child { border-bottom: none; }
+    .stat .label { color: #777; font-size: 14px; }
+    .stat .value { font-size: 18px; font-weight: 600; }
+    .stat .value.big { font-size: 28px; color: #d32f2f; }
+    .stat .value.green { color: #2e7d32; }
+    .full-width { grid-column: 1 / -1; }
+    .bar-chart { display: flex; gap: 4px; align-items: flex-end; height: 120px; margin-top: 10px; }
+    .bar-chart .bar { flex: 1; background: #ef5350; border-radius: 3px 3px 0 0; position: relative; min-width: 40px; transition: height .5s; }
+    .bar-chart .bar .bar-label { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-size: 11px; color: #777; white-space: nowrap; }
+    .bar-chart .bar .bar-value { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .bar.federal { background: #1565c0; }
+    .bar.kanton { background: #ef5350; }
+    .bar.gemeinde { background: #ff8f00; }
+    .bar.wealth { background: #2e7d32; }
+    .actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+    .btn { padding: 10px 20px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 500; transition: all .2s; }
+    .btn-primary { background: #d32f2f; color: white; }
+    .btn-primary:hover { background: #b71c1c; }
+    .btn-secondary { background: #e0e0e0; color: #333; }
+    .btn-secondary:hover { background: #bdbdbd; }
+    .info-banner { background: #fff3e0; border-left: 4px solid #ff8f00; padding: 14px 20px; border-radius: 0 6px 6px 0; margin-bottom: 20px; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+    th { color: #777; font-weight: 500; font-size: 12px; text-transform: uppercase; }
+    td.amount { text-align: right; font-variant-numeric: tabular-nums; }
+    tr.total td { font-weight: 700; border-top: 2px solid #333; }
+    #loading { text-align: center; padding: 60px; color: #999; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="flag">🇨🇭</span>
+    <h1>Swiss Tax — Kanton Bern 2026</h1>
+  </div>
+  <div class="nav">
+    <a href="swiss-tax.html" class="active">Dashboard</a>
+    <a href="swiss-tax-calculator.html">Calculator</a>
+    <a href="swiss-tax-export.html">Export</a>
+    <a href="https://github.com/marhenk/swiss-tax-optimizer-2026">← Back to Repo</a>
+  </div>
+
+  <div class="container">
+    <div class="info-banner">
+      ⚠️ Tax rates are estimates based on simplified tariff tables. Verify with official Kanton Bern calculator before filing.
+    </div>
+
+    <div id="loading">Loading tax data...</div>
+    <div id="dashboard" style="display:none">
+      <div class="grid">
+        <!-- Total Tax Card -->
+        <div class="card">
+          <h2>Total Tax Burden</h2>
+          <div class="stat">
+            <span class="label">Total Tax</span>
+            <span class="value big" id="totalTax">—</span>
+          </div>
+          <div class="stat">
+            <span class="label">Effective Rate</span>
+            <span class="value" id="effectiveRate">—</span>
+          </div>
+          <div class="stat">
+            <span class="label">Monthly Tax</span>
+            <span class="value" id="monthlyTax">—</span>
+          </div>
+        </div>
+
+        <!-- Income Card -->
+        <div class="card">
+          <h2>Income Summary</h2>
+          <div class="stat">
+            <span class="label">Gross Income</span>
+            <span class="value" id="grossIncome">—</span>
+          </div>
+          <div class="stat">
+            <span class="label">Deductions</span>
+            <span class="value green" id="totalDeductions">—</span>
+          </div>
+          <div class="stat">
+            <span class="label">Taxable Income</span>
+            <span class="value" id="taxableIncome">—</span>
+          </div>
+        </div>
+
+        <!-- Tax Breakdown Chart -->
+        <div class="card full-width">
+          <h2>Tax Breakdown</h2>
+          <div class="bar-chart" id="barChart"></div>
+        </div>
+
+        <!-- Deductions Table -->
+        <div class="card">
+          <h2>Deductions</h2>
+          <table id="deductionsTable">
+            <thead><tr><th>Deduction</th><th style="text-align:right">Amount</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- Wealth Card -->
+        <div class="card">
+          <h2>Wealth Tax</h2>
+          <div class="stat">
+            <span class="label">Gross Wealth</span>
+            <span class="value" id="grossWealth">—</span>
+          </div>
+          <div class="stat">
+            <span class="label">Freibetrag</span>
+            <span class="value green" id="freibetrag">—</span>
+          </div>
+          <div class="stat">
+            <span class="label">Taxable Wealth</span>
+            <span class="value" id="taxableWealth">—</span>
+          </div>
+          <div class="stat">
+            <span class="label">Wealth Tax</span>
+            <span class="value" id="wealthTax">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="location.href='swiss-tax-calculator.html'">🧮 Open Calculator</button>
+        <button class="btn btn-primary" onclick="location.href='swiss-tax-export.html'">📤 Export for TaxMe</button>
+        <button class="btn btn-secondary" onclick="recalculate()">🔄 Recalculate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const fmt = n => 'CHF ' + n.toLocaleString('de-CH');
+
+    async function loadData() {
+      try {
+        const res = await fetch('data.json');
+        const fullData = await res.json();
+        // Use the baseline scenario as default
+        const data = transformScenarioData(fullData.scenarios[0]);
+        renderDashboard(data);
+      } catch (e) {
+        console.error('Failed to load data:', e);
+        // Fallback: use hardcoded demo data
+        renderDashboard(getDemoData());
+      }
+    }
+
+    function transformScenarioData(scenario) {
+      const r = scenario.result;
+      return {
+        income: { 
+          gross: r.income.gross, 
+          deductions: r.deductions.total, 
+          taxable: r.income.taxable 
+        },
+        wealth: { gross: 159000, deductions: 50000, taxable: 109000 },
+        taxes: {
+          federal: { tax: r.taxes.federal },
+          kanton: { kanton: { baseTax: r.taxes.kanton }, gemeinde: { tax: r.taxes.gemeinde } },
+          wealth: { total: r.taxes.wealth, freibetrag: 50000 }
+        },
+        summary: { totalTax: r.taxes.total, effectiveRate: r.effectiveRate + '%' },
+        deductions: {
+          income: r.deductions
+        }
+      };
+    }
+
+    function getDemoData() {
+      return {
+        income: { gross: 198000, deductions: 36138, taxable: 161862 },
+        wealth: { gross: 159000, deductions: 50000, taxable: 109000 },
+        taxes: {
+          federal: { tax: 7342 },
+          kanton: { kanton: { baseTax: 5749 }, gemeinde: { tax: 10578 } },
+          wealth: { total: 775, freibetrag: 50000 }
+        },
+        summary: { totalTax: 24444, effectiveRate: '12.35%' },
+        deductions: {
+          income: {
+            saeule3a: 7258, krankenkasse: 6000, berufskosten: 3780,
+            spenden: 500, verheiratetenabzug: 2600, kinderabzug: 16000
+          }
+        }
+      };
+    }
+
+    function renderDashboard(d) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+
+      document.getElementById('totalTax').textContent = fmt(d.summary.totalTax);
+      document.getElementById('effectiveRate').textContent = d.summary.effectiveRate;
+      document.getElementById('monthlyTax').textContent = fmt(Math.round(d.summary.totalTax / 12));
+      document.getElementById('grossIncome').textContent = fmt(d.income.gross);
+      document.getElementById('totalDeductions').textContent = '-' + fmt(d.income.deductions);
+      document.getElementById('taxableIncome').textContent = fmt(d.income.taxable);
+      document.getElementById('grossWealth').textContent = fmt(d.wealth.gross);
+      document.getElementById('freibetrag').textContent = '-' + fmt(d.taxes.wealth.freibetrag);
+      document.getElementById('taxableWealth').textContent = fmt(d.wealth.taxable);
+      document.getElementById('wealthTax').textContent = fmt(d.taxes.wealth.total);
+
+      // Bar chart
+      const taxes = [
+        { label: 'Federal', value: d.taxes.federal.tax, cls: 'federal' },
+        { label: 'Kanton', value: d.taxes.kanton.kanton.baseTax, cls: 'kanton' },
+        { label: 'Gemeinde', value: d.taxes.kanton.gemeinde.tax, cls: 'gemeinde' },
+        { label: 'Wealth', value: d.taxes.wealth.total, cls: 'wealth' }
+      ];
+      const maxTax = Math.max(...taxes.map(t => t.value));
+      const chart = document.getElementById('barChart');
+      chart.innerHTML = taxes.map(t => {
+        const h = Math.max(10, (t.value / maxTax) * 100);
+        return `<div class="bar ${t.cls}" style="height:${h}%">
+          <span class="bar-value">${fmt(t.value)}</span>
+          <span class="bar-label">${t.label}</span>
+        </div>`;
+      }).join('');
+
+      // Deductions table
+      const tbody = document.querySelector('#deductionsTable tbody');
+      const labels = {
+        saeule3a: 'Säule 3a', krankenkasse: 'Krankenkasse', berufskosten: 'Berufskosten',
+        spenden: 'Spenden', verheiratetenabzug: 'Verheiratetenabzug', kinderabzug: 'Kinderabzug'
+      };
+      let total = 0;
+      tbody.innerHTML = Object.entries(d.deductions.income)
+        .filter(([k, v]) => typeof v === 'number' && v > 0 && labels[k])
+        .map(([k, v]) => { total += v; return `<tr><td>${labels[k]}</td><td class="amount">${fmt(v)}</td></tr>`; })
+        .join('') + `<tr class="total"><td>Total</td><td class="amount">${fmt(total)}</td></tr>`;
+    }
+
+    function recalculate() { loadData(); }
+    loadData();
+  </script>
+</body>
+</html>
