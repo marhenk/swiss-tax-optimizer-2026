@@ -1,0 +1,80 @@
+{
+  "version": "2026.1",
+  "steuerperiode": 2026,
+  "personalien": {
+    "zivilstand": "verheiratet",
+    "kinder": 2,
+    "wohnort": {
+      "kanton": "BE",
+      "gemeinde": "Bümpliz",
+      "adresse": {}
+    },
+    "ahvNummer": null,
+    "zpvNummer": null
+  },
+  "einkommen": {
+    "unselbstaendig": [
+      {
+        "person": "partner",
+        "bruttolohn": 126000,
+        "ahvBeitraege": 6615,
+        "pensionskasse": null,
+        "bvg": null,
+        "nbuv": null,
+        "nettolohn": 126000
+      }
+    ],
+    "selbstaendig": [
+      {
+        "person": "self",
+        "umsatz": 72000,
+        "ausgaben": 0,
+        "gewinn": 72000,
+        "ahvBeitraege": 6883
+      }
+    ],
+    "kapitalertraege": 0,
+    "uebrigeEinkuenfte": 0,
+    "bruttoEinkommen": 198000,
+    "steuerbaresEinkommen": 153862
+  },
+  "vermoegen": {
+    "bankkonten": [
+      {
+        "typ": "Sparkonto",
+        "betrag": 159000
+      }
+    ],
+    "wertschriften": 0,
+    "saeule3a": [
+      {
+        "bank": "TBD",
+        "betrag": 0
+      }
+    ],
+    "pensionskasse": 0,
+    "liegenschaften": 0,
+    "schulden": 0,
+    "bruttoVermoegen": 159000,
+    "steuerbaresVermoegen": 109000
+  },
+  "abzuege": {
+    "saeule3a": 7258,
+    "pensionskasseEinkauf": 0,
+    "krankenkasse": 6000,
+    "schuldzinsen": 0,
+    "berufskosten": 3780,
+    "spenden": 500,
+    "verheiratetenabzug": 10600,
+    "kinderabzug": 16000,
+    "kinderbetreuung": 0,
+    "totalAbzuege": 44138
+  },
+  "steuern": {
+    "bund": 5867,
+    "kanton": 20315,
+    "gemeinde": 12216,
+    "vermoegenssteuer": 775,
+    "total": 39173
+  }
+}

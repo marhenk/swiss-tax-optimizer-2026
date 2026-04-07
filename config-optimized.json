@@ -1,0 +1,43 @@
+{
+  "year": 2026,
+  "household": {
+    "maritalStatus": "married",
+    "children": 2,
+    "location": {
+      "kanton": "BE",
+      "gemeinde": "Bern",
+      "steuerfuss": 1.54
+    }
+  },
+  "income": {
+    "employment": {
+      "partner": 126000,
+      "self": 0
+    },
+    "alv": 72000,
+    "selfEmployed": 0,
+    "rental": 0,
+    "investment": 0,
+    "other": 0
+  },
+  "wealth": {
+    "bank": 122712,
+    "securities": 0,
+    "realEstate": 0,
+    "saeule3a": 43546,
+    "pensionskasse": 0,
+    "debts": 0
+  },
+  "deductions": {
+    "saeule3a": {
+      "partner": 7258,
+      "self": 36288
+    },
+    "pensionskasseEinkauf": 20000,
+    "krankenkasse": 6000,
+    "schuldzinsen": 0,
+    "berufskosten": 4950,
+    "kinderbetreuung": 25000,
+    "spenden": 3000
+  }
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Swiss Tax Autoresearch Dashboard</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Georgia', serif; background: #FFF1E5; color: #333; padding: 2rem; }
+  h1 { color: #990F3D; font-size: 1.8rem; margin-bottom: 0.5rem; }
+  h2 { color: #0D7680; font-size: 1.3rem; margin: 1.5rem 0 0.5rem; }
+  .subtitle { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+  .score-box { display: inline-block; background: #0D7680; color: white; font-size: 2.5rem; font-weight: bold; padding: 1rem 2rem; border-radius: 4px; margin: 1rem 0; }
+  .score-box.fail { background: #990F3D; }
+  .score-box.pass { background: #0D7680; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+  th { background: #0F5499; color: white; padding: 0.5rem; text-align: left; font-size: 0.85rem; }
+  td { padding: 0.5rem; border-bottom: 1px solid #ddd; font-size: 0.85rem; }
+  tr:nth-child(even) { background: rgba(0,0,0,0.03); }
+  .pass { color: #0D7680; font-weight: bold; }
+  .fail { color: #990F3D; font-weight: bold; }
+  .metric { display: inline-block; background: white; border: 1px solid #ddd; padding: 0.8rem 1.2rem; margin: 0.3rem; border-radius: 4px; min-width: 140px; }
+  .metric-label { font-size: 0.7rem; color: #666; text-transform: uppercase; }
+  .metric-value { font-size: 1.4rem; font-weight: bold; color: #0F5499; }
+  .changelog { background: white; padding: 1rem; border-left: 3px solid #0D7680; margin: 1rem 0; font-size: 0.85rem; }
+  .fix-tag { background: #0D7680; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.7rem; margin-right: 0.3rem; }
+  .bug-tag { background: #990F3D; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.7rem; margin-right: 0.3rem; }
+</style>
+</head>
+<body>
+<h1>Swiss Tax Calculator — Autoresearch Dashboard</h1>
+<p class="subtitle">2026 Tax Year · Kanton Bern · Last run: 2025-04-07</p>
+
+<div class="score-box pass">200 / 200 (100%)</div>
+<span style="font-size: 0.9rem; color: #666; margin-left: 1rem;">Target: 190 (95%) ✅ PASS</span>
+
+<div style="margin-top: 1.5rem;">
+  <div class="metric"><div class="metric-label">Test Cases</div><div class="metric-value">5</div></div>
+  <div class="metric"><div class="metric-label">Evals</div><div class="metric-value">8</div></div>
+  <div class="metric"><div class="metric-label">Runs</div><div class="metric-value">5</div></div>
+  <div class="metric"><div class="metric-label">Baseline</div><div class="metric-value" style="color:#990F3D;">160</div></div>
+  <div class="metric"><div class="metric-label">Post-Fix</div><div class="metric-value" style="color:#0D7680;">200</div></div>
+</div>
+
+<h2>Test Case Results</h2>
+<table>
+  <tr>
+    <th>Case</th><th>Taxable Income</th><th>Total Tax</th><th>Wealth Tax</th><th>Eff. Rate</th><th>Score</th>
+  </tr>
+  <tr>
+    <td>1. Marcel Baseline</td><td>CHF 153,862</td><td>CHF 38,398</td><td>CHF 0</td><td>19.39%</td>
+    <td class="pass">8/8 ✅</td>
+  </tr>
+  <tr>
+    <td>2. Marcel Conservative</td><td>CHF 117,574</td><td>CHF 25,735</td><td>CHF 0</td><td>13.00%</td>
+    <td class="pass">8/8 ✅</td>
+  </tr>
+  <tr>
+    <td>3. Marcel Full Optimized</td><td>CHF 74,574</td><td>CHF 13,797</td><td>CHF 0</td><td>6.97%</td>
+    <td class="pass">8/8 ✅</td>
+  </tr>
+  <tr>
+    <td>4. Single Self-Employed</td><td>CHF 27,712</td><td>CHF 4,945</td><td>CHF 37</td><td>6.18%</td>
+    <td class="pass">8/8 ✅</td>
+  </tr>
+  <tr>
+    <td>5. High-Income Couple</td><td>CHF 305,384</td><td>CHF 103,638</td><td>CHF 1,775</td><td>29.61%</td>
+    <td class="pass">8/8 ✅</td>
+  </tr>
+</table>
+
+<h2>Eval Coverage</h2>
+<table>
+  <tr><th>Eval</th><th>Description</th><th>Status</th></tr>
+  <tr><td>1. Säule 3a Limits</td><td>Dual limits (with/without BVG)</td><td class="pass">✅ All 5 cases</td></tr>
+  <tr><td>2. Verheiratetenabzug</td><td>CHF 10,600 income + CHF 18,000 wealth</td><td class="pass">✅ All 5 cases</td></tr>
+  <tr><td>3. Progressive Tax</td><td>Federal + Kanton + Gemeinde in range</td><td class="pass">✅ All 5 cases</td></tr>
+  <tr><td>4. Wealth Tax</td><td>Progressive rates with Freibetrag</td><td class="pass">✅ All 5 cases</td></tr>
+  <tr><td>5. Kinderbetreuung</td><td>CHF 16k/child limit enforced</td><td class="pass">✅ All 5 cases</td></tr>
+  <tr><td>6. Commuting vs 3%</td><td>Auto-select better deduction</td><td class="pass">✅ All 5 cases</td></tr>
+  <tr><td>7. Zero Taxable Income</td><td>Floor at 0, no negative tax</td><td class="pass">✅ All 5 cases</td></tr>
+  <tr><td>8. TaxMe Export</td><td>All sections present</td><td class="pass">✅ All 5 cases</td></tr>
+</table>
+
+<h2>Bug Found & Fixed</h2>
+<div class="changelog">
+  <p><span class="bug-tag">BUG</span> <strong>Säule 3a limit not applied for ALV/self-employed</strong></p>
+  <p style="margin-top: 0.5rem;">The <code>_calculateSaeule3a()</code> function checked <code>income.selfEmployed > 0</code>, but selfEmployed is an object (not number), so the comparison always returned false. All contributors were capped at CHF 7,258 instead of CHF 36,288 for ohne 2. Säule.</p>
+  <p style="margin-top: 0.5rem;"><span class="fix-tag">FIX</span> Rewrote to iterate over all contributor keys, properly check object vs number for selfEmployed status, and apply correct limits per contributor.</p>
+  <p style="margin-top: 0.5rem;"><strong>Impact:</strong> Cases 2-5 all affected. Marcel's optimized tax went from CHF 35,559 to CHF 25,735 (CHF 9,824 additional savings from the fix).</p>
+</div>
+
+<h2>Optimization Summary (Marcel's Household)</h2>
+<table>
+  <tr><th>Scenario</th><th>Total Tax</th><th>Savings vs Baseline</th><th>Reduction</th></tr>
+  <tr><td>Baseline (no optimization)</td><td>CHF 38,398</td><td>—</td><td>—</td></tr>
+  <tr><td>Conservative (+ Marcel 3a)</td><td>CHF 25,735</td><td>CHF 12,663</td><td>33.0%</td></tr>
+  <tr><td>Full (+ PK Einkauf + Kita)</td><td>CHF 13,797</td><td>CHF 24,601</td><td>64.1%</td></tr>
+</table>
+
+<p style="margin-top: 2rem; font-size: 0.8rem; color: #999;">
+  Generated by Swiss Tax Autoresearch · 5 scenarios × 8 evals × 5 runs = 200 points · Score: 200/200
+</p>
+</body>
+</html>

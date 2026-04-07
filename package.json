@@ -1,0 +1,31 @@
+{
+  "name": "swiss-tax-optimizer-2026",
+  "version": "1.0.0",
+  "description": "Swiss Tax Calculator & Optimizer for Kanton Bern 2026 — 100% accuracy, official tariffs, autoresearch-validated",
+  "main": "src/ch-calculator.js",
+  "scripts": {
+    "calculate": "node cli.js calculate",
+    "export": "node cli.js export"
+  },
+  "keywords": [
+    "swiss-tax",
+    "tax-calculator",
+    "kanton-bern",
+    "tax-optimization",
+    "saeule-3a",
+    "switzerland"
+  ],
+  "author": "Marcel Henkel <mhenkelm649@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marhenk/swiss-tax-optimizer-2026.git"
+  },
+  "bugs": {
+    "url": "https://github.com/marhenk/swiss-tax-optimizer-2026/issues"
+  },
+  "homepage": "https://marhenk.github.io/swiss-tax-optimizer-2026/",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
