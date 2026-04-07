@@ -1,0 +1,171 @@
+{
+  "generated": "2026-04-07T10:34:00.000Z",
+  "scenarios": [
+    {
+      "name": "Baseline",
+      "description": "Current situation (no optimizations)",
+      "result": {
+        "income": {
+          "gross": 198000,
+          "taxable": 95904
+        },
+        "deductions": {
+          "total": 102096,
+          "verheiratetenabzug": 10600,
+          "kinderabzug": 16000,
+          "saeule3a": 7258,
+          "krankenkasse": 6000,
+          "berufskosten": 3960,
+          "sozialabzug": 58278
+        },
+        "taxes": {
+          "federal": 13773,
+          "kanton": 19220,
+          "gemeinde": 8644,
+          "wealth": 826,
+          "total": 42463
+        },
+        "effectiveRate": "21.45"
+      }
+    },
+    {
+      "name": "Conservative",
+      "description": "Add Marcel Säule 3a only",
+      "result": {
+        "income": {
+          "gross": 198000,
+          "taxable": 59616
+        },
+        "deductions": {
+          "total": 138384,
+          "verheiratetenabzug": 10600,
+          "kinderabzug": 16000,
+          "saeule3a": 43546,
+          "krankenkasse": 6000,
+          "berufskosten": 3960,
+          "sozialabzug": 58278
+        },
+        "taxes": {
+          "federal": 5544,
+          "kanton": 9668,
+          "gemeinde": 4349,
+          "wealth": 826,
+          "total": 20387
+        },
+        "effectiveRate": "10.30",
+        "savings": 22076,
+        "savingsPercent": "52.0"
+      }
+    },
+    {
+      "name": "Full Optimized",
+      "description": "All 6 optimizations applied",
+      "result": {
+        "income": {
+          "gross": 198000,
+          "taxable": 0
+        },
+        "deductions": {
+          "total": 198000,
+          "verheiratetenabzug": 10600,
+          "kinderabzug": 16000,
+          "saeule3a": 43546,
+          "pensionskasseEinkauf": 20000,
+          "kinderbetreuung": 25000,
+          "krankenkasse": 6000,
+          "berufskosten": 4950,
+          "spenden": 3000,
+          "sozialabzug": 68904
+        },
+        "taxes": {
+          "federal": 0,
+          "kanton": 0,
+          "gemeinde": 0,
+          "wealth": 826,
+          "total": 826
+        },
+        "effectiveRate": "0.42",
+        "savings": 41637,
+        "savingsPercent": "98.1"
+      }
+    }
+  ],
+  "optimizations": [
+    {
+      "name": "Säule 3a Marcel",
+      "amount": 36288,
+      "impact": 9062,
+      "priority": 5,
+      "status": "pending",
+      "deadline": "2026-12-31",
+      "steps": [
+        "Open VIAC/Finpension account (30 min)",
+        "Transfer CHF 36,288",
+        "Keep confirmation for tax return"
+      ]
+    },
+    {
+      "name": "Pensionskasse Einkauf",
+      "amount": 20000,
+      "impact": 5000,
+      "priority": 3,
+      "status": "verify",
+      "deadline": "2026-12-31",
+      "steps": [
+        "Request PK statement (Partner)",
+        "Check Einkaufspotenzial",
+        "Transfer if positive"
+      ]
+    },
+    {
+      "name": "Kinderbetreuung",
+      "amount": 25000,
+      "impact": 6250,
+      "priority": 4,
+      "status": "verify",
+      "deadline": "2026-12-31",
+      "steps": [
+        "Collect all receipts",
+        "Verify deductibility",
+        "Keep for tax return"
+      ]
+    },
+    {
+      "name": "Commuting effectiv",
+      "amount": 4950,
+      "impact": 1238,
+      "priority": 2,
+      "status": "calculate",
+      "deadline": "2027-03-31",
+      "steps": [
+        "Measure distance (Partner)",
+        "Count workdays",
+        "Calculate vs. Pauschal"
+      ]
+    },
+    {
+      "name": "Spenden",
+      "amount": 3000,
+      "impact": 750,
+      "priority": 1,
+      "status": "optional",
+      "deadline": "2026-12-31",
+      "steps": [
+        "Choose charity",
+        "Donate",
+        "Keep confirmation"
+      ]
+    }
+  ],
+  "cantonComparison": [
+    { "name": "Bern", "total": 42463, "diff": 0 },
+    { "name": "Zürich", "total": 45640, "diff": 3177 },
+    { "name": "Zug", "total": 31740, "diff": -10723 },
+    { "name": "Basel-Stadt", "total": 48180, "diff": 5717 }
+  ],
+  "saeule3aImpact": [
+    { "label": "No 3a", "amount": 0, "tax": 42463 },
+    { "label": "Partner 3a", "amount": 7258, "tax": 40651 },
+    { "label": "Both 3a", "amount": 43546, "tax": 20387 }
+  ]
+}

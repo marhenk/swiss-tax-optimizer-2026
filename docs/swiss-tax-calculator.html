@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Tax Calculator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+    .header { background: #d32f2f; color: white; padding: 20px 30px; display: flex; align-items: center; gap: 15px; }
+    .header h1 { font-size: 22px; font-weight: 600; }
+    .nav { background: #b71c1c; padding: 10px 30px; display: flex; gap: 20px; }
+    .nav a { color: rgba(255,255,255,.8); text-decoration: none; font-size: 14px; padding: 6px 14px; border-radius: 4px; }
+    .nav a:hover, .nav a.active { background: rgba(255,255,255,.15); color: white; }
+    .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card { background: white; border-radius: 10px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .card h2 { font-size: 15px; color: #555; margin-bottom: 16px; text-transform: uppercase; letter-spacing: .5px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 13px; color: #777; margin-bottom: 4px; }
+    .field input, .field select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; }
+    .field input:focus { border-color: #d32f2f; outline: none; box-shadow: 0 0 0 2px rgba(211,47,47,.15); }
+    .result-card { background: #fafafa; border: 2px solid #d32f2f; }
+    .result-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+    .result-row:last-child { border: none; }
+    .result-row.total { font-weight: 700; font-size: 18px; color: #d32f2f; border-top: 2px solid #333; padding-top: 12px; }
+    .result-row .val { font-variant-numeric: tabular-nums; }
+    .btn { padding: 12px 24px; border: none; border-radius: 6px; font-size: 15px; cursor: pointer; font-weight: 600; }
+    .btn-calc { background: #d32f2f; color: white; width: 100%; margin-top: 10px; }
+    .btn-calc:hover { background: #b71c1c; }
+    .full-width { grid-column: 1 / -1; }
+    .slider-row { display: flex; align-items: center; gap: 10px; }
+    .slider-row input[type=range] { flex: 1; }
+    .slider-row .slider-val { min-width: 80px; text-align: right; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span style="font-size:28px">🧮</span>
+    <h1>Swiss Tax Calculator — Kanton Bern</h1>
+  </div>
+  <div class="nav">
+    <a href="swiss-tax.html">Dashboard</a>
+    <a href="swiss-tax-calculator.html" class="active">Calculator</a>
+    <a href="swiss-tax-export.html">Export</a>
+    <a href="index.html">← Back</a>
+  </div>
+
+  <div class="container">
+    <div class="grid">
+      <!-- Household -->
+      <div class="card">
+        <h2>👥 Household</h2>
+        <div class="field">
+          <label>Marital Status</label>
+          <select id="marital"><option value="married">Verheiratet</option><option value="single">Ledig</option></select>
+        </div>
+        <div class="field">
+          <label>Children</label>
+          <input type="number" id="children" value="2" min="0" max="10">
+        </div>
+        <div class="field">
+          <label>Gemeinde</label>
+          <select id="gemeinde">
+            <option value="Bern">Stadt Bern (1.84)</option>
+            <option value="Bümpliz" selected>Bümpliz (1.84)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Income -->
+      <div class="card">
+        <h2>💰 Income</h2>
+        <div class="field">
+          <label>Employment (Partner) CHF</label>
+          <input type="number" id="empPartner" value="126000" step="1000">
+        </div>
+        <div class="field">
+          <label>Self-Employed / ALV (Self) CHF</label>
+          <input type="number" id="empSelf" value="72000" step="1000">
+        </div>
+        <div class="field">
+          <label>Investment Income CHF</label>
+          <input type="number" id="investment" value="0" step="100">
+        </div>
+      </div>
+
+      <!-- Wealth -->
+      <div class="card">
+        <h2>🏦 Wealth</h2>
+        <div class="field">
+          <label>Bank Accounts CHF</label>
+          <input type="number" id="bank" value="159000" step="1000">
+        </div>
+        <div class="field">
+          <label>Securities CHF</label>
+          <input type="number" id="securities" value="0" step="1000">
+        </div>
+        <div class="field">
+          <label>Säule 3a Balance CHF</label>
+          <input type="number" id="saeule3aBal" value="0" step="1000">
+        </div>
+        <div class="field">
+          <label>Debts CHF</label>
+          <input type="number" id="debts" value="0" step="1000">
+        </div>
+      </div>
+
+      <!-- Deductions -->
+      <div class="card">
+        <h2>📋 Deductions</h2>
+        <div class="field">
+          <label>Säule 3a Contributions (Partner) CHF</label>
+          <input type="number" id="saeule3aP" value="7258" max="7258" step="100">
+        </div>
+        <div class="field">
+          <label>Säule 3a Contributions (Self) CHF</label>
+          <input type="number" id="saeule3aS" value="0" max="36288" step="100">
+        </div>
+        <div class="field">
+          <label>Krankenkasse (Health Insurance) CHF</label>
+          <input type="number" id="krankenkasse" value="6000" step="100">
+        </div>
+        <div class="field">
+          <label>Donations (Spenden) CHF</label>
+          <input type="number" id="spenden" value="500" step="100">
+        </div>
+      </div>
+
+      <!-- Calculate Button -->
+      <div class="card full-width">
+        <button class="btn btn-calc" onclick="calculate()">🔢 Calculate Tax</button>
+      </div>
+
+      <!-- Results -->
+      <div class="card result-card full-width" id="results" style="display:none">
+        <h2>📊 Results</h2>
+        <div id="resultRows"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const fmt = n => 'CHF ' + n.toLocaleString('de-CH');
+    const getNum = id => parseInt(document.getElementById(id).value) || 0;
+    const getStr = id => document.getElementById(id).value;
+
+    function calculate() {
+      const marital = getStr('marital');
+      const children = getNum('children');
+      const grossIncome = getNum('empPartner') + getNum('empSelf') + getNum('investment');
+
+      // Deductions
+      const saeule3a = Math.min(getNum('saeule3aP') + getNum('saeule3aS'), 36288);
+      const krankenkasse = getNum('krankenkasse');
+      const berufskosten = Math.round(getNum('empPartner') * 0.03);
+      const spenden = getNum('spenden');
+      const verheiratetenabzug = marital === 'married' ? 2600 : 0;
+      const kinderabzug = children * 8000;
+      const totalDeductions = saeule3a + krankenkasse + berufskosten + spenden + verheiratetenabzug + kinderabzug;
+
+      const taxableIncome = Math.max(0, grossIncome - totalDeductions);
+
+      // Federal tax (simplified progressive)
+      const federalTax = calcProgressive(taxableIncome, marital === 'married' ? 'married' : 'single', 'federal');
+
+      // Kanton tax
+      const kantonTax = calcProgressive(taxableIncome, marital === 'married' ? 'married' : 'single', 'kanton');
+
+      // Gemeinde tax
+      const steuerfuss = 1.84;
+      const gemeindeTax = Math.round(kantonTax * steuerfuss);
+
+      // Wealth tax
+      const grossWealth = getNum('bank') + getNum('securities') + getNum('saeule3aBal');
+      const netWealth = grossWealth - getNum('debts');
+      const freibetrag = marital === 'married' ? 50000 : 25000;
+      const taxableWealth = Math.max(0, netWealth - freibetrag);
+      const wealthKanton = Math.round(taxableWealth * 0.0025);
+      const wealthGemeinde = Math.round(wealthKanton * steuerfuss);
+      const wealthTax = wealthKanton + wealthGemeinde;
+
+      const totalTax = federalTax + kantonTax + gemeindeTax + wealthTax;
+      const effectiveRate = grossIncome > 0 ? (totalTax / grossIncome * 100).toFixed(2) : '0';
+
+      // Render
+      const rows = [
+        ['Gross Income', fmt(grossIncome)],
+        ['Total Deductions', '-' + fmt(totalDeductions)],
+        ['Taxable Income', fmt(taxableIncome)],
+        ['', ''],
+        ['Federal Tax (Bundessteuer)', fmt(federalTax)],
+        ['Kanton Tax', fmt(kantonTax)],
+        ['Gemeinde Tax (×' + steuerfuss + ')', fmt(gemeindeTax)],
+        ['Wealth Tax', fmt(wealthTax)],
+        ['TOTAL TAX', fmt(totalTax)],
+      ];
+
+      const el = document.getElementById('resultRows');
+      el.innerHTML = rows.map(([l, v], i) => {
+        if (!l && !v) return '<hr style="border:none;border-top:1px solid #eee;margin:8px 0">';
+        const cls = i === rows.length - 1 ? 'result-row total' : 'result-row';
+        return `<div class="${cls}"><span>${l}</span><span class="val">${v}</span></div>`;
+      }).join('');
+
+      el.innerHTML += `<div class="result-row" style="margin-top:8px;color:#777">
+        <span>Effective Rate</span><span class="val">${effectiveRate}%</span>
+      </div>
+      <div class="result-row" style="color:#777">
+        <span>Monthly Tax</span><span class="val">${fmt(Math.round(totalTax / 12))}</span>
+      </div>`;
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    function calcProgressive(income, status, type) {
+      const brackets = type === 'federal' ? {
+        married: [[0,28300,0],[28300,50900,.01],[50900,58400,.02],[58400,75300,.03],[75300,90300,.04],[90300,103400,.05],[103400,114700,.06],[114700,124200,.07],[124200,131700,.08],[131700,137300,.09],[137300,141200,.10],[141200,143100,.11],[143100,Infinity,.115]],
+        single: [[0,14500,0],[14500,31600,.0077],[31600,41400,.0088],[41400,55200,.022],[55200,72500,.026],[72500,78100,.033],[78100,103600,.044],[103600,134600,.055],[134600,176000,.066],[176000,755200,.088],[755200,Infinity,.115]]
+      } : {
+        married: [[0,36000,0],[36000,72000,.02],[72000,108000,.04],[108000,144000,.06],[144000,180000,.08],[180000,216000,.10],[216000,Infinity,.12]],
+        single: [[0,18000,0],[18000,36000,.02],[36000,54000,.04],[54000,72000,.06],[72000,90000,.08],[90000,108000,.10],[108000,Infinity,.12]]
+      };
+
+      let tax = 0;
+      for (const [from, to, rate] of brackets[status]) {
+        if (income <= from) break;
+        tax += Math.round(Math.min(income - from, to - from) * rate);
+      }
+      return tax;
+    }
+
+    // Auto-calculate on load
+    calculate();
+  </script>
+</body>
+</html>

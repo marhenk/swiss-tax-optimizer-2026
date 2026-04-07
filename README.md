@@ -28,6 +28,31 @@ node cli.js calculate --year 2026
 node cli.js export --format json
 ```
 
+## 📊 Interactive Dashboard
+
+**Live Demo:** [https://marhenk.github.io/swiss-tax-optimizer-2026/](https://marhenk.github.io/swiss-tax-optimizer-2026/)
+
+**Features:**
+- **Tax Breakdown** — Federal, Kanton, Gemeinde, Wealth taxes
+- **Optimization Scenarios** — Compare Baseline vs. Conservative vs. Full Optimized
+- **Interactive Calculator** — Adjust deductions with sliders, see tax update live
+- **Säule 3a Impact** — Visualize savings from Marcel's ALV status (CHF 36,288 vs. CHF 7,258)
+- **Canton Comparison** — Compare Bern to Zürich, Zug, Basel-Stadt
+- **Action Items** — Prioritized checklist with deadlines
+- **TaxMe-Online Export** — Download JSON/CSV/Markdown formats
+
+**Pages:**
+- `/` — Dashboard overview
+- `/swiss-tax-calculator.html` — Interactive scenario builder
+- `/swiss-tax-export.html` — Export wizard
+
+**Local Usage:**
+```bash
+cd docs
+python3 -m http.server 8080
+# Open http://localhost:8080
+```
+
 ## Tax Calculation Example
 
 ```javascript

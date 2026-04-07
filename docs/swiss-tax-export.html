@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Tax Export — TaxMe-Online</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+    .header { background: #d32f2f; color: white; padding: 20px 30px; display: flex; align-items: center; gap: 15px; }
+    .header h1 { font-size: 22px; font-weight: 600; }
+    .nav { background: #b71c1c; padding: 10px 30px; display: flex; gap: 20px; }
+    .nav a { color: rgba(255,255,255,.8); text-decoration: none; font-size: 14px; padding: 6px 14px; border-radius: 4px; }
+    .nav a:hover, .nav a.active { background: rgba(255,255,255,.15); color: white; }
+    .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+    .card { background: white; border-radius: 10px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 20px; }
+    .card h2 { font-size: 15px; color: #555; margin-bottom: 16px; text-transform: uppercase; letter-spacing: .5px; }
+    .step { display: flex; gap: 16px; align-items: flex-start; padding: 16px 0; border-bottom: 1px solid #f0f0f0; }
+    .step:last-child { border: none; }
+    .step-num { width: 36px; height: 36px; border-radius: 50%; background: #d32f2f; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+    .step-content h3 { font-size: 15px; margin-bottom: 4px; }
+    .step-content p { font-size: 13px; color: #777; }
+    .btn { padding: 12px 24px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary { background: #d32f2f; color: white; }
+    .btn-primary:hover { background: #b71c1c; }
+    .btn-secondary { background: #e0e0e0; color: #333; }
+    .btn-secondary:hover { background: #bdbdbd; }
+    .btn-link { background: none; color: #1565c0; text-decoration: underline; padding: 8px 0; }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+    pre { background: #263238; color: #eeffff; padding: 20px; border-radius: 8px; font-size: 13px; overflow-x: auto; max-height: 400px; overflow-y: auto; white-space: pre-wrap; }
+    .checklist { list-style: none; padding: 0; }
+    .checklist li { padding: 8px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+    .checklist li::before { content: '☐'; font-size: 18px; }
+    .checklist li.done::before { content: '☑'; color: #2e7d32; }
+    .info-box { background: #e3f2fd; border-left: 4px solid #1565c0; padding: 14px 20px; border-radius: 0 6px 6px 0; font-size: 14px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span style="font-size:28px">📤</span>
+    <h1>Export for TaxMe-Online</h1>
+  </div>
+  <div class="nav">
+    <a href="swiss-tax.html">Dashboard</a>
+    <a href="swiss-tax-calculator.html">Calculator</a>
+    <a href="swiss-tax-export.html" class="active">Export</a>
+    <a href="index.html">← Back</a>
+  </div>
+
+  <div class="container">
+    <div class="info-box">
+      📋 This page generates reference data for manual entry into TaxMe-Online. There is currently no direct API integration.
+    </div>
+
+    <!-- Workflow Steps -->
+    <div class="card">
+      <h2>📝 TaxMe-Online Workflow</h2>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Generate Export</h3>
+          <p>Click below to generate JSON/CSV reference data from your configured tax data.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Login to TaxMe-Online</h3>
+          <p>Open <a href="https://www.belogin.directories.be.ch/taxme-npo/login/steklogin.jsf" target="_blank">TaxMe-Online</a> and login with AGOV.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Fill Form</h3>
+          <p>Use the exported data as reference. Copy values into each TaxMe section.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>Upload Documents</h3>
+          <p>Lohnausweis, Krankenkasse, Säule 3a Bescheinigung, Bank Statements (Dec 31).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h3>Submit (Freigabe)</h3>
+          <p>Review, then electronically submit. You'll receive an email confirmation.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Export Actions -->
+    <div class="card">
+      <h2>⬇️ Export Data</h2>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="generateExport('json')">📄 Export JSON</button>
+        <button class="btn btn-primary" onclick="generateExport('csv')">📊 Export CSV</button>
+        <button class="btn btn-secondary" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="card" id="previewCard" style="display:none">
+      <h2>👁️ Export Preview</h2>
+      <pre id="previewContent"></pre>
+      <div class="actions" style="margin-top:12px">
+        <button class="btn btn-secondary" onclick="downloadFile()">💾 Download File</button>
+      </div>
+    </div>
+
+    <!-- Document Checklist -->
+    <div class="card">
+      <h2>📎 Required Documents Checklist</h2>
+      <ul class="checklist">
+        <li>Lohnausweis (Partner — Swisscom)</li>
+        <li>ALV / Arbeitslosenkasse Bescheinigung (Marcel)</li>
+        <li>Krankenkasse Prämienrechnung (both)</li>
+        <li>Säule 3a Einzahlungsbeleg (if any)</li>
+        <li>Bank Statements (Dec 31 balances)</li>
+        <li>Wertschriftenauszug (if securities)</li>
+        <li>Pensionskasse Ausweis (Partner)</li>
+        <li>Spendenquittungen (if any)</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    let currentExport = '';
+    let currentFormat = 'json';
+
+    function getExportData() {
+      return {
+        version: '2026.1',
+        steuerperiode: 2026,
+        personalien: { zivilstand: 'verheiratet', kinder: 2, wohnort: { kanton: 'BE', gemeinde: 'Bümpliz' } },
+        einkommen: {
+          unselbstaendig: [{ person: 'Partner', bruttolohn: 126000 }],
+          selbstaendig: [{ person: 'Marcel', betrag: 72000 }],
+          bruttoEinkommen: 198000, steuerbaresEinkommen: 161862
+        },
+        vermoegen: {
+          bankkonten: [{ typ: 'Sparkonto', betrag: 159000 }],
+          bruttoVermoegen: 159000, steuerbaresVermoegen: 109000
+        },
+        abzuege: {
+          saeule3a: 7258, krankenkasse: 6000, berufskosten: 3780,
+          spenden: 500, verheiratetenabzug: 2600, kinderabzug: 16000, total: 36138
+        },
+        steuern: {
+          bund: 7342, kanton: 5749, gemeinde: 10578,
+          vermoegenssteuer: 775, total: 24444
+        }
+      };
+    }
+
+    function generateExport(format) {
+      currentFormat = format;
+      const data = getExportData();
+
+      if (format === 'json') {
+        currentExport = JSON.stringify(data, null, 2);
+      } else {
+        const rows = [
+          'Section,Field,Value',
+          `Income,Gross,${data.einkommen.bruttoEinkommen}`,
+          `Income,Taxable,${data.einkommen.steuerbaresEinkommen}`,
+          `Wealth,Gross,${data.vermoegen.bruttoVermoegen}`,
+          `Wealth,Taxable,${data.vermoegen.steuerbaresVermoegen}`,
+          `Tax,Federal,${data.steuern.bund}`,
+          `Tax,Kanton,${data.steuern.kanton}`,
+          `Tax,Gemeinde,${data.steuern.gemeinde}`,
+          `Tax,Wealth,${data.steuern.vermoegenssteuer}`,
+          `Tax,Total,${data.steuern.total}`
+        ];
+        currentExport = rows.join('\n');
+      }
+
+      document.getElementById('previewContent').textContent = currentExport;
+      document.getElementById('previewCard').style.display = 'block';
+    }
+
+    function copyToClipboard() {
+      if (!currentExport) generateExport('json');
+      navigator.clipboard.writeText(currentExport).then(() => alert('Copied to clipboard!'));
+    }
+
+    function downloadFile() {
+      const blob = new Blob([currentExport], { type: currentFormat === 'json' ? 'application/json' : 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `taxme-2026.${currentFormat}`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
